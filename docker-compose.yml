@@ -1,0 +1,99 @@
+name: orchestrateur-pharmafield
+
+# Runtime hardening for the application containers (also use on the VPS):
+# read-only root filesystem, no privilege escalation, no Linux capabilities.
+x-hardened: &hardened
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  tmpfs:
+    - /tmp
+
+services:
+  postgres:
+    # Official PostgreSQL 17 image with the pgvector extension available.
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: pharmafield
+      POSTGRES_PASSWORD: pharmafield
+      POSTGRES_DB: pharmafield
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:55434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pharmafield"]
+      interval: 5s
+      retries: 10
+
+  mailpit:
+    image: ghcr.io/axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:1027:1025"
+      - "127.0.0.1:8027:8025"
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      WEB_DEV_PORT: ${WEB_DEV_PORT:-5173}
+      API_UPSTREAM: host.docker.internal:${API_DEV_PORT:-3000}
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  api:
+    <<: *hardened
+    profiles: ["apps"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://pharmafield:pharmafield@postgres:5432/pharmafield
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    expose:
+      - "3000"
+    depends_on:
+      postgres: { condition: service_healthy }
+      mailpit: { condition: service_started }
+
+  worker:
+    <<: *hardened
+    profiles: ["apps"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    command: ["bun", "run", "src/index-worker.ts"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://pharmafield:pharmafield@postgres:5432/pharmafield
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    working_dir: /app/apps/api
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  web:
+    <<: *hardened
+    profiles: ["apps"]
+    # Caddy writes its state here; keep it in memory on a read-only filesystem.
+    tmpfs:
+      - /tmp
+      - /data
+      - /config
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://api.orchestrateur-pharmafield.localhost}
+        WEB_URL: ${WEB_URL:-http://orchestrateur-pharmafield.localhost}
+    ports:
+      - "${WEB_DEV_PORT:-5173}:8080"
+
+volumes:
+  postgres_data:

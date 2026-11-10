@@ -1,0 +1,10 @@
+http://orchestrateur-pharmafield.localhost {
+  reverse_proxy host.docker.internal:{$WEB_DEV_PORT}
+}
+
+http://api.orchestrateur-pharmafield.localhost {
+  reverse_proxy {$API_UPSTREAM} {
+    header_up X-Real-IP {remote_host}
+    header_up -CF-Connecting-IP
+  }
+}

@@ -1,0 +1,5 @@
+# Use only with the apps profile. The API stays private to the Compose network.
+services:
+  caddy:
+    environment:
+      API_UPSTREAM: api:3000

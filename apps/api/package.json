@@ -1,0 +1,36 @@
+{
+  "name": "@orchestrateur-pharmafield/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --env-file ../../.env --watch src/index-api.ts",
+    "dev:worker": "bun --env-file ../../.env --watch src/index-worker.ts",
+    "start": "bun --env-file ../../.env src/index-api.ts",
+    "start:worker": "bun --env-file ../../.env src/index-worker.ts",
+    "build": "bun build src/index-api.ts src/index-worker.ts --target bun --outdir dist --external pg-native",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "bun test --env-file ../../.env test/unit",
+    "test:integration": "bun test --env-file ../../.env test/integration",
+    "db:generate": "drizzle-kit generate",
+    "db:ensure": "bun --env-file ../../.env scripts/ensure-db.ts",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.11"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^1.6.3",
+    "@orchestrateur-pharmafield/shared": "workspace:*",
+    "@scalar/hono-api-reference": "^0.12.17",
+    "better-auth": "^1.7.15",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.16",
+    "nodemailer": "^10.3.1",
+    "pg": "^8.23.1",
+    "pg-boss": "^12.38.0",
+    "pino": "^10.4.0",
+    "zod": "^4.6.7"
+  }
+}

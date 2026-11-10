@@ -1,0 +1,11 @@
+{
+  # No admin API: the static site never needs runtime reconfiguration.
+  admin off
+}
+
+:8080 {
+  root * /srv
+  encode zstd gzip
+  try_files {path} /index.html
+  file_server
+}

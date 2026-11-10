@@ -1,0 +1,20 @@
+{
+  "name": "@orchestrateur-pharmafield/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schemas/errors": "./src/schemas/errors.ts",
+    "./schemas/listing": "./src/schemas/listing.ts",
+    "./schemas/temporal": "./src/schemas/temporal.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "bun test test"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^1.1.5",
+    "zod": "^4.1.5"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "orchestrateur-pharmafield",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "dev:web": "turbo dev --filter=@orchestrateur-pharmafield/web",
+    "dev:api": "turbo dev --filter=@orchestrateur-pharmafield/api",
+    "dev:worker": "turbo dev:worker --filter=@orchestrateur-pharmafield/api",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck && tsc --noEmit -p tsconfig.json",
+    "test": "turbo test",
+    "test:integration": "bun run --cwd apps/api test:integration",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "format:unstaged": "bun scripts/format-unstaged.ts",
+    "prepare": "husky",
+    "e2e": "playwright test",
+    "db:generate": "bun run --cwd apps/api db:generate",
+    "db:ensure": "bun run --cwd apps/api db:ensure",
+    "db:migrate": "bun run --cwd apps/api db:migrate"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@playwright/test": "^1.55.0",
+    "@types/bun": "latest",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "bun@1.4.0"
+}

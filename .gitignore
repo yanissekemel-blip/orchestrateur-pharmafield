@@ -1,0 +1,16 @@
+node_modules/
+.turbo/
+.tanstack/
+dist/
+.env
+.env.local
+.env.ports
+.env.*.local
+!.env.example
+apps/web/src/routeTree.gen.ts
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# macOS
+.DS_Store
