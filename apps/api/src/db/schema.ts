@@ -1,4 +1,5 @@
-import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { boolean, check, index, pgTable, text } from 'drizzle-orm/pg-core';
 import { utcTimestamp } from './temporal';
 
 export const user = pgTable(
@@ -9,6 +10,8 @@ export const user = pgTable(
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').notNull().default(false),
     image: text('image'),
+    // Global role (`user` or `admin`), set server-side only.
+    role: text('role').notNull().default('user'),
     createdAt: utcTimestamp('created_at').notNull().defaultNow(),
     updatedAt: utcTimestamp('updated_at')
       .notNull()
@@ -18,6 +21,7 @@ export const user = pgTable(
   (table) => [
     index('user_created_at_id_idx').on(table.createdAt, table.id),
     index('user_name_idx').on(table.name, table.id),
+    check('user_role_check', sql`${table.role} in ('user', 'admin')`),
   ],
 );
 

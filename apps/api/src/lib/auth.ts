@@ -1,3 +1,4 @@
+import { ROLES } from '@orchestrateur-pharmafield/shared';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '../db/client';
@@ -19,7 +20,20 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: [env.WEB_URL, env.API_URL],
   database: drizzleAdapter(db, { provider: 'pg', schema }),
-  emailAndPassword: { enabled: true },
+  // No public registration: accounts are created with `bun run user:create`.
+  emailAndPassword: { enabled: true, disableSignUp: true },
+  user: {
+    additionalFields: {
+      // Global role, exposed on the session's user. `input: false`: no client
+      // request can set or change it.
+      role: {
+        type: 'string',
+        required: true,
+        defaultValue: ROLES.USER,
+        input: false,
+      },
+    },
+  },
   advanced: {
     backgroundTasks: {
       handler: (task) => {

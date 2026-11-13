@@ -15,6 +15,13 @@
       "when": 1794312934305,
       "tag": "0001_enable-pgvector",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794581247308,
+      "tag": "0002_complex_boomer",
+      "breakpoints": true
     }
   ]
 }

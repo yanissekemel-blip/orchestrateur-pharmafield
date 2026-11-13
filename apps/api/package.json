@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "bun test --env-file ../../.env test/unit",
     "test:integration": "bun test --env-file ../../.env test/integration",
+    "user:create": "bun --env-file ../../.env scripts/user-create.ts",
     "db:generate": "drizzle-kit generate",
     "db:ensure": "bun --env-file ../../.env scripts/ensure-db.ts",
     "db:migrate": "drizzle-kit migrate"

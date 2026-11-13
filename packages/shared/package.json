@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./schemas/auth": "./src/schemas/auth.ts",
     "./schemas/errors": "./src/schemas/errors.ts",
     "./schemas/listing": "./src/schemas/listing.ts",
     "./schemas/temporal": "./src/schemas/temporal.ts"

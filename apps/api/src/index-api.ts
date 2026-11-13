@@ -8,11 +8,15 @@ import { safeError } from './lib/log-error';
 import { logger } from './lib/logger';
 import { requestLogger } from './middlewares/logger';
 import { rateLimit } from './middlewares/rate-limit';
+import { devLogin } from './modules/dev-auth/dev-login';
 import { systemRoutes } from './modules/system/system.routes';
 
 const app = createApiApp();
 app.use('*', requestLogger);
 app.use('*', cors({ origin: env.WEB_URL, credentials: true }));
+// One-click local sign-in as admin or user, never registered in production.
+if (env.NODE_ENV !== 'production')
+  app.post('/api/dev/login/:role', rateLimit(20, 60, 'dev-login'), devLogin);
 app.use('/api/auth/*', rateLimit(60, 60, 'auth'));
 app.use('/api/auth/sign-up/email', rateLimit(5, 600, 'sign-up'));
 app.use('/api/auth/sign-in/email', rateLimit(10, 600, 'sign-in'));

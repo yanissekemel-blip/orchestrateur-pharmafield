@@ -20,6 +20,7 @@
     "format:unstaged": "bun scripts/format-unstaged.ts",
     "prepare": "husky",
     "e2e": "playwright test",
+    "user:create": "bun run --cwd apps/api user:create",
     "db:generate": "bun run --cwd apps/api db:generate",
     "db:ensure": "bun run --cwd apps/api db:ensure",
     "db:migrate": "bun run --cwd apps/api db:migrate"
