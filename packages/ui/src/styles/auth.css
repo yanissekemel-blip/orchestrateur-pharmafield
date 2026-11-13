@@ -1,0 +1,455 @@
+/* Authentication shell: a glass story panel beside a raised form. */
+@layer components {
+  .auth-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-height: 100dvh;
+    place-items: center;
+    padding: var(--layout-pad);
+    /* Transparent so the page grain shows through behind the panel. */
+    background: transparent;
+  }
+
+  .auth-surface {
+    display: grid;
+    width: min(100%, 1040px);
+    min-height: min(520px, calc(100dvh - 2 * var(--layout-pad)));
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    overflow: hidden;
+    border-radius: var(--radius-shell);
+  }
+
+  /* Story column: the logo lockup, centred. */
+  .auth-story {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 28px;
+    padding: 34px 36px 38px;
+  }
+  /*
+   * Emblem: one centred logo lockup on a soft backdrop: a halo of brand
+   * light and two slanted bands.
+   */
+  .auth-emblem {
+    position: relative;
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 34px;
+    overflow: hidden;
+    margin: 0 -36px;
+  }
+  .auth-emblem-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      58% 46% at 50% 50%,
+      rgba(36, 36, 36, 0.08),
+      transparent 72%
+    );
+  }
+  .auth-emblem-backdrop::before,
+  .auth-emblem-backdrop::after {
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    border-radius: 18px;
+    content: "";
+    transform: skewX(-17deg);
+  }
+  .auth-emblem-backdrop::before {
+    left: 6%;
+    width: 30%;
+    background: linear-gradient(
+      180deg,
+      rgba(36, 36, 36, 0.06),
+      rgba(36, 36, 36, 0) 78%
+    );
+  }
+  .auth-emblem-backdrop::after {
+    right: 9%;
+    width: 15%;
+    background: linear-gradient(
+      0deg,
+      rgba(130, 196, 204, 0.07),
+      rgba(130, 196, 204, 0) 72%
+    );
+  }
+  /* The wordmark and the monogram share one width so they read as a unit. */
+  .auth-emblem-wordmark,
+  .auth-emblem-mark {
+    position: relative;
+    z-index: 1;
+    width: min(230px, 58%);
+    height: auto;
+    color: var(--ink);
+  }
+  .auth-emblem-wordmark {
+    width: min(260px, 66%);
+  }
+  .auth-emblem-mark {
+    width: min(150px, 40%);
+  }
+
+  .auth-steps {
+    display: grid;
+    gap: 18px;
+  }
+  .auth-steps li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink-3);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  /* Connector between consecutive step markers. */
+  .auth-steps li:not(:last-child)::after {
+    position: absolute;
+    top: 30px;
+    left: 13px;
+    width: 1.5px;
+    height: 14px;
+    border-radius: 1px;
+    background: var(--charcoal-a10);
+    content: "";
+  }
+  .auth-step-marker {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    flex: none;
+    place-items: center;
+    border: 1.5px solid var(--charcoal-a10);
+    border-radius: 50%;
+    background: var(--panel);
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .auth-step-marker svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 3;
+  }
+  .auth-steps li[data-state="done"] {
+    color: var(--ink-2);
+  }
+  .auth-steps li[data-state="done"] .auth-step-marker {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #fff;
+  }
+  .auth-steps li[data-state="current"] {
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .auth-steps li[data-state="current"] .auth-step-marker {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--ink);
+  }
+
+  /* Form column: one raised white surface inset within the glass. */
+  /* Panel padding utilities would override this layer, so spacing lives on .auth-form. */
+  .auth-form-side {
+    display: grid;
+    min-width: 0;
+    place-items: center;
+    margin: 10px;
+  }
+  .auth-form {
+    display: grid;
+    width: min(100%, 444px);
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+    padding: 44px 32px;
+  }
+  .auth-form-header h1 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .auth-form-header p {
+    margin-top: 6px;
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+  .auth-form-header strong,
+  .auth-form-footer strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .auth-form-body {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .auth-form-footer {
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+    text-align: center;
+  }
+  .auth-footer-split {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .auth-fields {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .auth-field {
+    display: grid;
+    min-width: 0;
+    gap: 7px;
+  }
+  .auth-field-label {
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .auth-field-description {
+    color: var(--ink-3);
+    font-size: 11.5px;
+  }
+  .auth-field-error {
+    color: var(--bad);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .auth-input[data-slot="input-group"] {
+    height: 42px;
+  }
+  .auth-input [data-slot="input-group-control"] {
+    font-size: 13px;
+  }
+  .auth-link {
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--charcoal-a25);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--motion-fast) ease-out;
+  }
+  .auth-link:hover {
+    text-decoration-color: var(--accent);
+  }
+  .auth-link:focus-visible {
+    border-radius: 4px;
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  /* A field-level link, such as "Forgot password?", sits level with its label. */
+  .auth-field-with-action {
+    position: relative;
+  }
+  .auth-field-with-action > .auth-link {
+    position: absolute;
+    top: -1px;
+    right: 0;
+  }
+
+  .auth-code {
+    width: 100%;
+    gap: 10px;
+  }
+  .auth-code [data-slot="input-otp-group"] {
+    flex: 1;
+  }
+  .auth-code [data-slot="input-otp-slot"] {
+    height: 50px;
+    width: auto;
+    flex: 1;
+    font-size: 18px;
+  }
+  .auth-code-gap {
+    width: 6px;
+    height: 2px;
+    flex: none;
+    border-radius: 1px;
+    background: var(--charcoal-a25);
+  }
+
+  .auth-notice {
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+  .auth-secondary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .auth-dev {
+    display: grid;
+    gap: 8px;
+    border-top: 1px dashed var(--charcoal-a10);
+    padding-top: 16px;
+  }
+  .auth-dev p {
+    color: var(--ink-3);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .auth-outcome {
+    display: grid;
+    gap: 6px;
+  }
+  .auth-outcome p {
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .auth-outcome-actions {
+    margin-top: 14px;
+  }
+
+  .auth-invitation {
+    overflow: hidden;
+  }
+  .auth-invitation dl > div {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 16px;
+  }
+  .auth-invitation dt {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+  .auth-invitation dt svg {
+    width: 15px;
+    height: 15px;
+    color: var(--ink-3);
+  }
+  .auth-invitation dd {
+    min-width: 0;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .auth-invitation-note {
+    padding: 12px 16px;
+    color: var(--ink-3);
+    font-size: 12px;
+  }
+
+  @media (width < 48rem) {
+    .auth-layout {
+      align-items: start;
+    }
+    .auth-surface {
+      min-height: auto;
+      grid-template-columns: 1fr;
+    }
+    .auth-story {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px 16px;
+      padding: 16px 20px 6px;
+    }
+    /* Phones keep only a small wordmark above the form. */
+    .auth-emblem {
+      flex: 1;
+      margin: 0;
+    }
+    .auth-emblem-grid,
+    .auth-emblem-mark,
+    .auth-emblem::after {
+      display: none;
+    }
+    .auth-emblem-wordmark {
+      width: 128px;
+    }
+    /* Progress collapses to markers, with only the current step named. */
+    .auth-steps {
+      display: flex;
+      width: 100%;
+      order: 3;
+      gap: 8px;
+    }
+    .auth-steps li:not(:last-child)::after {
+      display: none;
+    }
+    .auth-steps li:not([data-state="current"]) > span:last-child {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .auth-step-marker {
+      width: 24px;
+      height: 24px;
+      font-size: 11px;
+    }
+    .auth-form-side {
+      margin: 8px;
+    }
+    .auth-form {
+      width: 100%;
+      padding: 28px 20px 24px;
+    }
+  }
+
+  @media (width < 40rem) {
+    .auth-layout {
+      padding: calc(var(--phone-pad) + var(--safe-top))
+        calc(var(--phone-pad) + var(--safe-right))
+        calc(var(--phone-pad) + var(--safe-bottom))
+        calc(var(--phone-pad) + var(--safe-left));
+    }
+    .auth-surface {
+      min-height: calc(
+        100dvh -
+        2 *
+        var(--phone-pad) -
+        var(--safe-top) -
+        var(--safe-bottom)
+      );
+      grid-template-rows: auto 1fr;
+    }
+    .auth-form-side {
+      align-items: start;
+    }
+    .auth-form-header h1 {
+      font-size: 24px;
+    }
+  }
+}

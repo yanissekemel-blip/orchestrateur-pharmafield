@@ -14,7 +14,7 @@
 - **Backend (`apps/api`):** Bun, Hono with OpenAPI and Scalar, Drizzle ORM, PostgreSQL 17 with pgvector, Better Auth, pg-boss (PostgreSQL-backed queues, no Redis). One app with API and worker entrypoints: `src/index-api.ts` and `src/index-worker.ts`.
 - **Frontend (`apps/web`):** Vite SPA, zero SSR, React, TanStack Router and Query, Tailwind CSS v4.
 - **Shared (`packages/shared`):** Zod schemas and types shared by API and web.
-- **UI (`packages/ui`):** `@orchestrateur-pharmafield/ui`, stock shadcn/ui components (`components.json`, style `radix-nova`). Add components with `bunx shadcn@latest add <name>` from `packages/ui`. Import them as `@orchestrateur-pharmafield/ui/components/<name>`, and the stylesheet once with `@orchestrateur-pharmafield/ui/styles.css`. Shadcn sources are vendored as generated: they are formatted but excluded from lint.
+- **UI (`packages/ui`):** `@orchestrateur-pharmafield/ui`, the shared design system (Tailwind v4, Radix, shadcn utilities), with one component per file in `src/`. Import components as `@orchestrateur-pharmafield/ui/<name>` (modals from `@orchestrateur-pharmafield/ui/modals`), and the stylesheet once with `@orchestrateur-pharmafield/ui/styles.css`.
 - **Testing:** Bun test for API and shared; Vitest with happy-dom and React Testing Library for web; Playwright Chromium-only for E2E.
 
 ## 2. Architecture & Testing
@@ -66,6 +66,11 @@
 - **Nested routes:** A parent route that shows either its own page or a child page decides with committed matches (`useChildMatches`), never by comparing `location.pathname`.
 - **Search:** Keep input and URL updates immediate; debounce network requests (250 ms), not local filtering or form validation.
 - **Forms:** Validate with the shared Zod schemas from `@orchestrateur-pharmafield/shared`; do not re-implement validation rules in components.
+- **Controls:** Use `@orchestrateur-pharmafield/ui` components instead of native buttons, inputs, selects, textareas, and dialogs. If a suitable control is missing, add or extend it in the package first.
+- **Theme:** Design tokens live in `packages/ui/src/styles/globals.css` and follow pharmafield.fr: charcoal (`--charcoal-*`, `#242424`) for text, dark fills, and active selection; brand teal (`--teal-400`, `#82c4cc`) for the primary action (with charcoal text), signal markers, and the focus ring. Teal never carries white text and is never text on a light surface; use `--teal-700` for readable teal. Titles use Poppins (`font-display`, `font-heading`), text uses Montserrat, values and code use JetBrains Mono. Use tokens, never hardcoded colours, in components and pages.
+- **Brand:** `PharmafieldLogo` (`@orchestrateur-pharmafield/ui/pharmafield-logo`) renders the logo images from `packages/ui/src/assets/brand/` (full logo or `compact` emblem, `tone="white"` on dark surfaces). Do not redraw or recolour the logo.
+- **Motion:** The `motion` library is limited to `@orchestrateur-pharmafield/ui`; pages never import it. Vitest disables its animations in `apps/web/test/setup.ts`.
+- **Catalog:** Add each new shared UI family once to the development-only `/ui/react` catalog in `apps/web/src/routes/ui/-components/`, with safe local state and no API calls. Keep the route inaccessible and its JavaScript excluded in production.
 
 ## 6. API Contracts & Security
 
@@ -87,7 +92,7 @@
 ## 8. Environment & Mail
 
 - **Configuration:** Keep `.env.example`, the API Zod env schema (`src/lib/env.ts`), and this file synchronized. Update ignored local `.env` when present; never commit it or real secrets. `.env.local` holds the generated frontend port and optional overrides.
-- **Validation:** Validate server secrets/URLs at API startup in `src/lib/env.ts`. Validate only public `VITE_*` settings at Vite startup/build and the client boundary (`apps/web/src/lib/env.ts`); never expose server secrets through them.
+- **Validation:** Validate server secrets/URLs at API startup in `src/lib/env.ts`. Validate only public `VITE_*` settings at Vite startup/build and the client boundary (`apps/web/src/lib/env.ts`); never expose server secrets through them. `VITE_MAP_STYLE_URL` optionally overrides the MapLibre style of `LocationMap` (default: OpenFreeMap).
 - **SMTP:** Email uses `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, `SMTP_SECURE`, `SMTP_USER`, and `SMTP_PASSWORD` through `sendMail()` in `src/lib/mailer.ts`. Locally use Mailpit at `127.0.0.1:1027`, or hostname `mailpit` port `1025` from containers; inbox: `http://localhost:8027`. Production requires an authenticated TLS-capable provider. Email content is French.
 
 ## 9. Local Workflow & Deployment

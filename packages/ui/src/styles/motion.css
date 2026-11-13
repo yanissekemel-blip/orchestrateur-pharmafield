@@ -1,0 +1,127 @@
+/*
+ * Motion entry point. Slot-based rules live in three files by surface:
+ * controls (buttons, inputs, toggles), overlays (dialogs, menus, toasts), and
+ * content (pages, cards, tables, states). Shared keyframes and the single
+ * reduced-motion override live here.
+ */
+@import "./motion-controls.css";
+@import "./motion-overlays.css";
+@import "./motion-content.css";
+
+@layer components {
+  /* The login backdrop's slanted bands drift slowly, out of phase. */
+  @keyframes pharmafield-drift {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 var(--drift, 14px);
+    }
+  }
+
+  @keyframes pharmafield-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pharmafield-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pharmafield-soft-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--motion-rise));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pharmafield-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pharmafield-popover-in {
+    from {
+      opacity: 0;
+      transform: translate(
+          var(--motion-popover-x, 0),
+          var(--motion-popover-y, -4px)
+        )
+        scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+  }
+
+  @keyframes pharmafield-popover-out {
+    to {
+      opacity: 0;
+      transform: translate(
+          var(--motion-popover-x, 0),
+          var(--motion-popover-y, -4px)
+        )
+        scale(0.97);
+    }
+  }
+}
+
+/*
+ * Reduced motion: globals.css already shortens every animation and transition;
+ * here hover and press movement is removed so nothing jumps either.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .auth-emblem-backdrop::before,
+  .auth-emblem-backdrop::after {
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must stop the backdrop drift. */
+    animation: none !important;
+  }
+
+  [data-slot="button"],
+  [data-slot="button"] > svg,
+  [data-slot="select-trigger"],
+  [data-slot="tabs-trigger"],
+  [data-slot="toggle"],
+  [data-slot="toggle-group-item"],
+  [data-slot="command-item"],
+  [data-slot="dropdown-menu-item"],
+  [data-slot="context-menu-item"],
+  [data-slot="select-item"],
+  [data-slot="table-row"],
+  [data-slot="panel"],
+  .workspace-nav-item svg {
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override hover movement. */
+    translate: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override press scaling. */
+    scale: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override icon rotation. */
+    rotate: none !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override page transitions. */
+    animation: none !important;
+  }
+
+  [data-indicator="ready"]::before {
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override indicator slides. */
+    transition: none !important;
+  }
+}

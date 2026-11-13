@@ -1,0 +1,362 @@
+/*
+ * Overlay motion: modals rise on a soft spring, menus and tooltips grow from
+ * their trigger, sheets slide from their edge, and every exit is quick.
+ */
+@layer components {
+  /* Backdrops fade and their blur ramps in, rather than appearing frosted. */
+  :is(
+    [data-slot="alert-dialog-overlay"],
+    [data-slot="dialog-overlay"],
+    [data-slot="drawer-overlay"],
+    [data-slot="sheet-overlay"]
+  )[data-state="open"] {
+    animation:
+      pharmafield-fade-in var(--motion-base) var(--ease-out) both,
+      pharmafield-backdrop-in var(--motion-slow) var(--ease-out) both;
+  }
+
+  :is(
+    [data-slot="alert-dialog-overlay"],
+    [data-slot="dialog-overlay"],
+    [data-slot="drawer-overlay"],
+    [data-slot="sheet-overlay"]
+  )[data-state="closed"] {
+    animation: pharmafield-fade-out var(--motion-base) var(--ease-in) both;
+  }
+
+  /* Dialogs: opacity eases while position and scale settle on a spring. */
+  :is(
+    [data-slot="alert-dialog-content"],
+    [data-slot="dialog-content"]
+  )[data-state="open"] {
+    animation:
+      pharmafield-fade-in var(--motion-base) var(--ease-out) both,
+      pharmafield-dialog-rise var(--motion-spring) var(--ease-spring-soft) both;
+  }
+
+  :is(
+    [data-slot="alert-dialog-content"],
+    [data-slot="dialog-content"]
+  )[data-state="closed"] {
+    animation:
+      pharmafield-fade-out var(--motion-fast) var(--ease-in) both,
+      pharmafield-dialog-sink var(--motion-fast) var(--ease-in) both;
+  }
+
+  /* Modal contents follow the surface: body first, then the footer. */
+  [data-slot="modal-form-body"] > *,
+  [data-slot="form-message"] {
+    animation: pharmafield-soft-rise var(--motion-slow) var(--ease-out)
+      backwards;
+  }
+  [data-slot="modal-form-body"] > :nth-child(1) {
+    animation-delay: 40ms;
+  }
+  [data-slot="modal-form-body"] > :nth-child(2) {
+    animation-delay: 70ms;
+  }
+  [data-slot="modal-form-body"] > :nth-child(3) {
+    animation-delay: 100ms;
+  }
+  [data-slot="modal-form-body"] > :nth-child(4) {
+    animation-delay: 130ms;
+  }
+  [data-slot="modal-form-body"] > :nth-child(n + 5) {
+    animation-delay: 160ms;
+  }
+
+  :is(
+      [data-slot="alert-dialog-content"],
+      [data-slot="dialog-content"]
+    )[data-state="open"]
+    .modal-footer-surface {
+    animation: pharmafield-soft-rise var(--motion-slow) var(--ease-out) 120ms
+      backwards;
+  }
+
+  /* Sheets slide from their edge on a soft spring. */
+  [data-slot="sheet-content"][data-state="open"] {
+    animation:
+      pharmafield-fade-in var(--motion-base) var(--ease-out) both,
+      pharmafield-sheet-in var(--motion-spring) var(--ease-spring-soft) both;
+  }
+  [data-slot="sheet-content"][data-state="closed"] {
+    animation: pharmafield-sheet-out var(--motion-base) var(--ease-in) both;
+  }
+  [data-slot="sheet-content"][data-side="left"] {
+    --pharmafield-sheet-x: -24px;
+    --pharmafield-sheet-y: 0;
+  }
+  [data-slot="sheet-content"][data-side="right"] {
+    --pharmafield-sheet-x: 24px;
+    --pharmafield-sheet-y: 0;
+  }
+  [data-slot="sheet-content"][data-side="top"] {
+    --pharmafield-sheet-x: 0;
+    --pharmafield-sheet-y: -24px;
+  }
+  [data-slot="sheet-content"][data-side="bottom"] {
+    --pharmafield-sheet-x: 0;
+    --pharmafield-sheet-y: 24px;
+  }
+
+  /*
+   * Floating surfaces (popovers, menus, selects, hover cards, tooltips) grow
+   * from their trigger: Radix sets each surface's transform origin and side.
+   */
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"],
+    [data-slot="tooltip-content"]
+  ) {
+    --motion-popover-x: 0;
+    --motion-popover-y: -4px;
+  }
+  [data-slot="popover-content"] {
+    transform-origin: var(--radix-popover-content-transform-origin, center);
+  }
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"],
+    [data-slot="tooltip-content"]
+  )[data-side="top"] {
+    --motion-popover-y: 4px;
+  }
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"],
+    [data-slot="tooltip-content"]
+  )[data-side="left"] {
+    --motion-popover-x: 4px;
+    --motion-popover-y: 0;
+  }
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"],
+    [data-slot="tooltip-content"]
+  )[data-side="right"] {
+    --motion-popover-x: -4px;
+    --motion-popover-y: 0;
+  }
+
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"]
+  )[data-state="open"] {
+    animation:
+      pharmafield-fade-in var(--motion-fast) var(--ease-out) both,
+      pharmafield-popover-in var(--motion-slow) var(--ease-spring-soft) both;
+  }
+
+  :is(
+    [data-slot="popover-content"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="context-menu-sub-content"],
+    [data-slot="menubar-content"],
+    [data-slot="menubar-sub-content"],
+    [data-slot="hover-card-content"],
+    [data-slot="select-content"]
+  )[data-state="closed"] {
+    animation: pharmafield-popover-out var(--motion-fast) var(--ease-in) both;
+  }
+
+  /* Tooltips are small and frequent: a quick, short grow. */
+  [data-slot="tooltip-content"] {
+    animation: pharmafield-popover-in var(--motion-base) var(--ease-spring) both;
+  }
+  [data-slot="tooltip-content"][data-state="closed"] {
+    animation: pharmafield-popover-out var(--motion-instant) var(--ease-in) both;
+  }
+
+  /* Menu items cascade in, capped so long menus never feel slow. */
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > * {
+    animation: pharmafield-menu-item-in var(--motion-base) var(--ease-out)
+      backwards;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(2) {
+    animation-delay: 12ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(3) {
+    animation-delay: 24ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(4) {
+    animation-delay: 36ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(5) {
+    animation-delay: 48ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(6) {
+    animation-delay: 60ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(7) {
+    animation-delay: 72ms;
+  }
+  :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="context-menu-content"]
+    )[data-state="open"]
+    > :nth-child(n + 8) {
+    animation-delay: 84ms;
+  }
+
+  /* Each settings section rises in as it opens. */
+  [data-slot="settings-tab-content"] {
+    animation: pharmafield-soft-rise var(--motion-slow) var(--ease-out) both;
+  }
+
+  /* Tabs swap content with a short rise, only once the user switches. */
+  [data-slot="tabs"][data-switched]
+    [data-slot="tabs-content"][data-state="active"] {
+    animation: pharmafield-soft-rise var(--motion-slow) var(--ease-out) both;
+  }
+
+  @keyframes pharmafield-backdrop-in {
+    from {
+      backdrop-filter: blur(0) saturate(1);
+    }
+  }
+
+  @keyframes pharmafield-dialog-rise {
+    from {
+      transform: translateY(14px) scale(0.96);
+    }
+    to {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes pharmafield-dialog-sink {
+    to {
+      transform: translateY(6px) scale(0.98);
+    }
+  }
+
+  @keyframes pharmafield-sheet-in {
+    from {
+      transform: translate(
+        var(--pharmafield-sheet-x, 24px),
+        var(--pharmafield-sheet-y, 0)
+      );
+    }
+    to {
+      transform: translate(0, 0);
+    }
+  }
+
+  @keyframes pharmafield-sheet-out {
+    to {
+      opacity: 0;
+      transform: translate(
+        var(--pharmafield-sheet-x, 24px),
+        var(--pharmafield-sheet-y, 0)
+      );
+    }
+  }
+
+  @keyframes pharmafield-menu-item-in {
+    from {
+      opacity: 0;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+/*
+ * Toasts: Sonner injects unlayered styles, so these overrides are unlayered
+ * with higher specificity. The card springs in; its icon pops just after it.
+ */
+[data-sonner-toaster] [data-sonner-toast] {
+  transition:
+    transform var(--motion-spring) var(--ease-spring-soft),
+    opacity var(--motion-slow) var(--ease-out),
+    height var(--motion-slow) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out);
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-icon] > svg {
+  animation: pharmafield-toast-face-in var(--motion-spring) var(--ease-spring)
+    120ms both;
+}
+
+@keyframes pharmafield-toast-face-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster] [data-sonner-toast] {
+    /* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override toast movement. */
+    transition-duration: 1ms !important;
+  }
+}

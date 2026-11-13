@@ -1,0 +1,239 @@
+/*
+ * Control motion: hover lift, spring press, icon nudges, and checked states.
+ * Movement uses the individual translate/scale/rotate properties so hover,
+ * press, and positioning utilities compose instead of overwriting each other.
+ */
+@layer components {
+  [data-slot="button"],
+  [data-slot="select-trigger"],
+  [data-slot="native-select"] {
+    transition-property:
+      background-color, border-color, color, box-shadow, translate, scale;
+    transition-duration:
+      var(--motion-fast), var(--motion-fast), var(--motion-fast),
+      var(--motion-base), var(--motion-base), var(--motion-spring);
+    transition-timing-function:
+      var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-out),
+      var(--ease-out), var(--ease-spring);
+  }
+
+  [data-slot="button"]:not(:disabled):hover,
+  [data-slot="select-trigger"]:not(:disabled):hover,
+  [data-slot="native-select"]:not(:disabled):hover {
+    translate: 0 var(--motion-lift);
+  }
+
+  /* Pressing snaps in fast; releasing springs back. */
+  [data-slot="button"]:not(:disabled):active,
+  [data-slot="select-trigger"]:not(:disabled):active,
+  [data-slot="native-select"]:not(:disabled):active {
+    translate: 0 0;
+    scale: 0.97;
+    transition-duration:
+      var(--motion-fast), var(--motion-fast), var(--motion-fast),
+      var(--motion-base), var(--motion-instant), var(--motion-instant);
+  }
+
+  [data-slot="button"][data-variant="link"]:hover,
+  [data-slot="button"][data-variant="link"]:active {
+    translate: none;
+    scale: none;
+  }
+
+  /* Directional icons lean into the action; Plus turns a quarter. */
+  [data-slot="button"] > svg {
+    transition:
+      translate var(--motion-spring) var(--ease-spring),
+      rotate var(--motion-spring) var(--ease-spring);
+  }
+  [data-slot="button"]:not(:disabled):hover
+    > svg:is(
+      .lucide-arrow-right,
+      .lucide-chevron-right,
+      .lucide-external-link,
+      .lucide-send,
+      .lucide-arrow-up-right
+    ) {
+    translate: 2px 0;
+  }
+  [data-slot="button"]:not(:disabled):hover
+    > svg:is(.lucide-arrow-left, .lucide-chevron-left) {
+    translate: -2px 0;
+  }
+  [data-slot="button"]:not(:disabled):hover > svg.lucide-plus {
+    rotate: 90deg;
+  }
+  [data-slot="button"]:not(:disabled):hover > svg:is(.lucide-download) {
+    translate: 0 1px;
+  }
+  [data-slot="button"]:not(:disabled):hover > svg:is(.lucide-upload) {
+    translate: 0 -1px;
+  }
+  [data-slot="button"]:not(:disabled):hover
+    > svg:is(.lucide-refresh-cw, .lucide-rotate-cw) {
+    rotate: 60deg;
+  }
+
+  /* Toggles and tabs press slightly; their active pill slides (see below). */
+  [data-slot="tabs-trigger"],
+  [data-slot="toggle"],
+  [data-slot="toggle-group-item"] {
+    transition-property: background-color, color, box-shadow, scale;
+    transition-duration:
+      var(--motion-fast), var(--motion-fast), var(--motion-fast),
+      var(--motion-spring);
+    transition-timing-function:
+      var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-spring);
+  }
+  [data-slot="tabs-trigger"]:not(:disabled):active,
+  [data-slot="toggle"]:not(:disabled):active,
+  [data-slot="toggle-group-item"]:not(:disabled):active {
+    scale: 0.97;
+    transition-duration:
+      var(--motion-fast), var(--motion-fast), var(--motion-fast),
+      var(--motion-instant);
+  }
+
+  /* Checks pop in with a spring. */
+  [data-slot="checkbox-indicator"] > svg {
+    animation: pharmafield-pop-in var(--motion-spring) var(--ease-spring) both;
+  }
+  [data-slot="radio-group-indicator"] > svg {
+    animation: pharmafield-pop-in var(--motion-spring) var(--ease-spring) both;
+  }
+  [data-slot="checkbox"]:not(:disabled):active,
+  [data-slot="radio-group-item"]:not(:disabled):active {
+    scale: 0.9;
+  }
+  [data-slot="radio-group-card"] {
+    transition-property: background-color, box-shadow;
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-out);
+  }
+  [data-slot="checkbox"],
+  [data-slot="radio-group-item"] {
+    transition-property: background-color, border-color, box-shadow, scale;
+    transition-duration:
+      var(--motion-fast), var(--motion-fast), var(--motion-fast),
+      var(--motion-spring);
+    transition-timing-function:
+      var(--ease-out), var(--ease-out), var(--ease-out), var(--ease-spring);
+  }
+
+  /* Switch thumb stretches while pressed, then springs to its side. */
+  [data-slot="switch"]:not(:disabled):active [data-slot="switch-thumb"] {
+    scale: 1.18 0.92;
+  }
+
+  /* Fields: the focus ring and border ease in rather than snapping. */
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="input-group"] {
+    transition:
+      border-color var(--motion-fast) var(--ease-out),
+      box-shadow var(--motion-base) var(--ease-out),
+      background-color var(--motion-fast) var(--ease-out);
+  }
+
+  [data-slot="command-item"],
+  [data-slot="dropdown-menu-item"],
+  [data-slot="context-menu-item"],
+  [data-slot="select-item"] {
+    transition:
+      background-color var(--motion-fast) ease-out,
+      color var(--motion-fast) ease-out,
+      translate var(--motion-base) var(--ease-out);
+  }
+
+  /*
+   * Table rows grow on hover and the rows above and below grow a little with
+   * them. The row scales as a whole so its cells stay aligned; it sits above
+   * its neighbours while scaled. Header, loading and state rows stay put.
+   */
+  /* The grown row stays inside the table, so it never widens the scroll area. */
+  [data-slot="table"] {
+    contain: paint;
+  }
+
+  [data-slot="table-body"]
+    > [data-slot="table-row"]:not([data-state-row], [aria-hidden="true"]) {
+    position: relative;
+    transition:
+      background-color var(--motion-fast) ease-out,
+      scale var(--motion-row) var(--ease-out);
+  }
+
+  /* Touch screens skip the grow: a tap would leave the row scaled. */
+  @media (hover: hover) {
+    [data-slot="table-body"]
+      > [data-slot="table-row"]:not(
+        [data-state-row],
+        [aria-hidden="true"]
+      ):hover {
+      z-index: 2;
+      scale: var(--motion-row-grow);
+    }
+
+    [data-slot="table-body"]
+      > [data-slot="table-row"]:not([data-state-row], [aria-hidden="true"]):has(
+        + [data-slot="table-row"]:hover:not(
+            [data-state-row],
+            [aria-hidden="true"]
+          )
+      ),
+    [data-slot="table-body"]
+      > [data-slot="table-row"]:hover:not(
+        [data-state-row],
+        [aria-hidden="true"]
+      )
+      + [data-slot="table-row"]:not([data-state-row], [aria-hidden="true"]) {
+      z-index: 1;
+      scale: var(--motion-row-grow-near);
+    }
+  }
+
+  [data-slot="command-item"]:hover,
+  [data-slot="dropdown-menu-item"]:hover,
+  [data-slot="context-menu-item"]:hover,
+  [data-slot="select-item"]:hover {
+    translate: 1px 0;
+  }
+}
+
+/*
+ * Sliding active pill (tabs, segmented controls, the workspace rail, settings
+ * navigation). `useActiveIndicator` measures the active item and writes its
+ * box to custom properties; the pill is painted behind the items. Unlayered so
+ * it can hide the active item's own background utilities once measured.
+ */
+[data-indicator] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-indicator="ready"]::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: var(--indicator-w);
+  height: var(--indicator-h);
+  border-radius: var(--indicator-radius, var(--radius-control));
+  background: var(--indicator-bg, #fff);
+  box-shadow: var(--indicator-shadow, var(--shadow-raised));
+  content: "";
+  pointer-events: none;
+  translate: var(--indicator-x) var(--indicator-y);
+  transition:
+    translate var(--motion-spring) var(--ease-spring-soft),
+    width var(--motion-spring) var(--ease-spring-soft),
+    height var(--motion-spring) var(--ease-spring-soft);
+}
+
+[data-indicator="ready"] [data-indicator-active] {
+  background: transparent;
+}
+
+[data-indicator="ready"] [data-indicator-active]:not(:focus-visible) {
+  box-shadow: none;
+}

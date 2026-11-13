@@ -1,124 +1,470 @@
+@import "@fontsource-variable/montserrat";
+@import "@fontsource/poppins/latin-300.css";
+@import "@fontsource/poppins/latin-400.css";
+@import "@fontsource/poppins/latin-500.css";
+@import "@fontsource/poppins/latin-600.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-
-/* Scan the shared components from every app that imports this stylesheet. */
-@source "../components";
-
-@custom-variant dark (&:is(.dark *));
-
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
+@import "./layout.css";
+@import "./auth.css";
+@import "./components.css";
+@import "./motion.css";
+@import "./phone.css";
+@source "../";
+@source "../../../../apps/web/src";
+@plugin "@tailwindcss/typography";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-emphasis: var(--accent-strong);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--ink);
+  --color-secondary-foreground: #ffffff;
+  --color-muted: var(--panel2);
+  --color-muted-foreground: var(--ink-3);
+  --color-accent: var(--interaction);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: var(--bad);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--teal-600);
+  --color-glass: var(--surface-glass);
+  --color-glass-strong: var(--surface-glass-strong);
+
+  --color-sidebar: var(--nav-bg);
+  --color-sidebar-foreground: var(--nav-ink);
+  --color-sidebar-primary: var(--accent);
+  --color-sidebar-primary-foreground: #ffffff;
+  --color-sidebar-accent: var(--nav-active-bg);
+  --color-sidebar-accent-foreground: var(--nav-accent);
+  --color-sidebar-border: var(--nav-line);
+  --color-sidebar-ring: var(--nav-accent);
+
+  --color-pharmafield-bg: var(--bg);
+  --color-pharmafield-panel: var(--panel);
+  --color-pharmafield-panel-2: var(--panel2);
+  --color-pharmafield-ink: var(--ink);
+  --color-pharmafield-ink-2: var(--ink-2);
+  --color-pharmafield-ink-3: var(--ink-3);
+  --color-pharmafield-gold: var(--accent);
+  --color-pharmafield-gold-soft: var(--accent-soft);
+  --color-pharmafield-sage: var(--teal-700);
+  --color-pharmafield-sage-soft: var(--accent-2-soft);
+  --color-pharmafield-success: var(--ok);
+  --color-pharmafield-success-soft: var(--ok-soft);
+  --color-pharmafield-warning: var(--warn);
+  --color-pharmafield-warning-soft: var(--warn-soft);
+  --color-pharmafield-danger: var(--bad);
+  --color-pharmafield-danger-soft: var(--bad-soft);
+  --color-pharmafield-info: var(--email);
+  --color-pharmafield-info-soft: var(--email-soft);
+
+  --font-sans: "Montserrat Variable", system-ui, -apple-system, sans-serif;
+  --font-display: "Poppins", "Montserrat Variable", system-ui, sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono, "JetBrains Mono Variable"), ui-monospace,
+    monospace;
+
+  /*
+   * Soft geometry: generous, even radii. Controls share `--radius-control`,
+   * surfaces step up from cards to panels to the shell.
+   */
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
+  --radius-panel: 16px;
+  --radius-input: 8px;
+  --radius-card: 12px;
+  --radius-shell: 20px;
+  --radius-pill: 999px;
+
+  --spacing-panel: 20px;
+  --letter-spacing-eyebrow: 0.1em;
+
+  --shadow-panel: var(--shadow-glass);
+  --shadow-card: var(--shadow-card-glass);
+  --shadow-modal: 0 40px 100px rgba(36, 36, 36, 0.3);
+  --shadow-xs: var(--shadow-input);
+  --shadow-sm: var(--shadow-card-glass);
+  --shadow-md: var(--shadow-raised);
+  --shadow-lg: var(--shadow-float);
+  --shadow-xl: var(--shadow-modal);
+}
+
+:root {
+  color-scheme: light;
+
+  /*
+   * Pharmafield primitives, from pharmafield.fr and the « PharmaField
+   * Groupe » logo. Charcoal (#242424, the site's dark ink) is the structural
+   * colour: text, dark fills, active selection. Brand teal (#82c4cc) is the
+   * accent: the primary action (with charcoal text, like the site's buttons),
+   * signal markers, the secondary data series, and the focus ring. Teal never
+   * carries white text and is never used as text on white; use `--teal-700`
+   * when teal must be readable on a light surface.
+   * Ink alphas keep the contrast steps of the design system.
+   */
+  --teal-50: #f1f9fa;
+  --teal-100: #e0f1f3;
+  --teal-200: #c4e4e8;
+  --teal-300: #a6d5db;
+  --teal-400: #82c4cc;
+  --teal-500: #66b0b9;
+  --teal-600: #4a98a2;
+  --teal-700: #2a7f8a;
+  --teal-800: #20636c;
+  --brand-teal: #82c4cc;
+  --charcoal-950: #141414;
+  --charcoal-900: #242424;
+  --charcoal-800: #333333;
+  --charcoal-700: #474747;
+  --brand-ink: #242424;
+  --charcoal-a03: rgba(36, 36, 36, 0.03);
+  --charcoal-a05: rgba(36, 36, 36, 0.05);
+  --charcoal-a06: rgba(36, 36, 36, 0.06);
+  --charcoal-a07: rgba(36, 36, 36, 0.08);
+  --charcoal-a10: rgba(36, 36, 36, 0.11);
+  --charcoal-a15: rgba(36, 36, 36, 0.16);
+  --charcoal-a25: rgba(36, 36, 36, 0.26);
+  --charcoal-a45: rgba(36, 36, 36, 0.48);
+  --charcoal-a60: rgba(36, 36, 36, 0.64);
+  /* A light, airy canvas: the app is a working tool, unlike the dark marketing site. */
+  --grey-50: #f9f9f9;
+  --grey-100: #f3f5f5;
+  --grey-200: #e6e8e8;
+  /*
+   * Surfaces: shell panels are near-opaque frosted white with a crisp charcoal
+   * hairline; cards are solid white with a hairline border and a cut corner.
+   */
+  --surface-glass: rgba(255, 255, 255, 0.82);
+  --surface-glass-strong: rgba(255, 255, 255, 0.9);
+  --surface-card: #ffffff;
+  --surface-column: rgba(36, 36, 36, 0.03);
+  --surface-overlay: rgba(18, 18, 18, 0.38);
+  --border-glass: rgba(36, 36, 36, 0.08);
+  /* Floating surfaces and modals: a slightly stronger charcoal hairline. */
+  --border-glass-strong: rgba(36, 36, 36, 0.12);
+  --border-card: rgba(36, 36, 36, 0.1);
+  --blur-glass: blur(24px) saturate(1.4);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-glass:
+    0 1px 2px rgba(36, 36, 36, 0.04), 0 12px 32px rgba(36, 36, 36, 0.06);
+  --shadow-card-glass: 0 1px 2px rgba(36, 36, 36, 0.05);
+  --shadow-raised:
+    0 1px 2px rgba(36, 36, 36, 0.06), 0 4px 12px rgba(36, 36, 36, 0.08);
+  --shadow-input: 0 1px 2px rgba(36, 36, 36, 0.06);
+  --shadow-float: 0 18px 40px rgba(36, 36, 36, 0.2);
+  --shadow-accent: 0 4px 14px rgba(74, 152, 162, 0.28);
+  /* Focus: a white gap then a teal ring, visible on charcoal and white alike. */
+  --focus-ring: 0 0 0 2px #fff, 0 0 0 4px var(--teal-600);
+  /* Buttons, inputs-like controls, toggles, rail items. */
+  --radius-control: 8px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Semantic tokens */
+  --bg: var(--grey-100);
+  --panel: #ffffff;
+  --panel2: var(--grey-50);
+  /* Fields: a soft grey tint so they read on white panels; white on focus. */
+  --field: #f5f5f5;
+  --ink: var(--charcoal-900);
+  --ink-2: var(--charcoal-a60);
+  --ink-3: var(--charcoal-a45);
+  --line: var(--charcoal-a07);
+  --line-2: var(--charcoal-a05);
+
+  --accent: var(--charcoal-900);
+  --accent-strong: var(--charcoal-700);
+  --accent-soft: rgba(36, 36, 36, 0.07);
+  /* Brand teal: signal markers and the primary action. */
+  --signal: var(--teal-400);
+  --action: var(--teal-400);
+  --action-hover: var(--teal-300);
+  --action-ink: var(--charcoal-900);
+  --interaction: var(--charcoal-a06);
+  --accent-2: var(--teal-400);
+  --accent-2-soft: rgba(130, 196, 204, 0.18);
+  --filter-active: var(--charcoal-900);
+  --filter-active-soft: rgba(36, 36, 36, 0.07);
+
+  --ok: #12805c;
+  --ok-soft: rgba(18, 128, 92, 0.1);
+  /* Errors: a deep crimson, clearly apart from the brand palette. */
+  --bad: #b3101c;
+  --bad-strong: #8f0d16;
+  --bad-soft: rgba(179, 16, 28, 0.09);
+  --warn: #c2620a;
+  --warn-strong: #8a4506;
+  --warn-soft: rgba(194, 98, 10, 0.11);
+
+  --email: #2563eb;
+  --email-soft: rgba(37, 99, 235, 0.1);
+  --linkedin: #0a66c2;
+  --linkedin-soft: rgba(10, 102, 194, 0.1);
+  --whatsapp: #22a06b;
+  --whatsapp-soft: rgba(34, 160, 107, 0.1);
+  --call: var(--teal-700);
+  --call-soft: rgba(130, 196, 204, 0.14);
+
+  /* The rail is light glass like the workspace; the active item is charcoal with a teal tick. */
+  --nav-bg: var(--surface-glass);
+  --nav-ink: var(--charcoal-900);
+  --nav-ink-2: var(--charcoal-a60);
+  --nav-ink-3: var(--charcoal-a45);
+  --nav-line: var(--charcoal-a07);
+  --nav-accent: var(--signal);
+  --nav-active-bg: var(--charcoal-900);
+  --nav-logo-bg: var(--charcoal-900);
+  --nav-logo-ink: #ffffff;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 18px;
+  --space-5: 26px;
+  --space-6: 40px;
+  --sidebar-w: 234px;
+  --sidebar-collapsed-w: 68px;
+  --layout-pad: 16px;
+  --layout-gap: 14px;
+  --sidebar-panel-gap: 10px;
+
+  /*
+   * Adaptive layout. Three device classes share Tailwind's breakpoints:
+   * phone below 40rem (640px, `max-sm:`), tablet from 40rem (`sm:`), desktop
+   * from 64rem (1024px, `lg:`). CSS media queries cannot read variables, so
+   * stylesheets write the same values: `@media (width < 40rem)` for phones.
+   * Safe areas come from the notch and system bars (zero in browsers);
+   * Capacitor's SystemBars plugin also provides --safe-area-inset-*.
+   */
+  --safe-top: max(
+    env(safe-area-inset-top, 0px),
+    var(--safe-area-inset-top, 0px)
+  );
+  --safe-right: max(
+    env(safe-area-inset-right, 0px),
+    var(--safe-area-inset-right, 0px)
+  );
+  --safe-bottom: max(
+    env(safe-area-inset-bottom, 0px),
+    var(--safe-area-inset-bottom, 0px)
+  );
+  --safe-left: max(
+    env(safe-area-inset-left, 0px),
+    var(--safe-area-inset-left, 0px)
+  );
+  --phone-pad: 8px;
+  --tabbar-h: 58px;
+  --touch-target: 44px;
+
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: var(--panel);
+  --popover-foreground: var(--ink);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--ink);
+  --secondary-foreground: #ffffff;
+  --muted: var(--panel2);
+  --muted-foreground: var(--ink-3);
+  --destructive: var(--bad);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--teal-600);
+  --page: var(--layout-pad);
+  --gutter: var(--layout-gap);
+
+  /* Motion: durations, easings, and distances shared by every animation. */
+  --motion-instant: 90ms;
+  --motion-fast: 140ms;
+  --motion-base: 200ms;
+  --motion-enter: var(--motion-base);
+  --motion-slow: 320ms;
+  --motion-page: 260ms;
+  --motion-spring: 420ms;
+  --motion-ease: var(--ease-out);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Springs: a slight overshoot for small controls, a softer one for surfaces. */
+  --ease-spring: linear(
+    0,
+    0.06 3%,
+    0.24 7%,
+    0.52 12%,
+    0.79 18%,
+    0.96 24%,
+    1.04 30%,
+    1.06 35%,
+    1.05 41%,
+    1.02 50%,
+    1.005 60%,
+    0.998 72%,
+    1
+  );
+  --ease-spring-soft: linear(
+    0,
+    0.05 3%,
+    0.2 7%,
+    0.45 12%,
+    0.72 19%,
+    0.9 26%,
+    0.99 33%,
+    1.02 40%,
+    1.025 46%,
+    1.01 58%,
+    1
+  );
+  --motion-rise: 6px;
+  --motion-lift: -1px;
+  /* Table hover: the row under the pointer grows, its neighbours a little. */
+  --motion-row-grow: 1.02;
+  --motion-row-grow-near: 1.006;
+  --motion-row: 180ms;
+  --shadow-accent-hover: 0 8px 20px rgba(74, 152, 162, 0.34);
+}
+
+/*
+ * Typography, as on pharmafield.fr: Poppins for titles and headings,
+ * Montserrat for text, in sentence case everywhere.
+ */
+@utility font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@utility font-heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility font-label {
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
   }
+
+  html {
+    background: var(--bg);
+    font-size: 14px;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 450;
+    letter-spacing: 0;
+    /* Long unbroken strings (emails, URLs) wrap instead of overflowing. */
+    overflow-wrap: break-word;
+    font-feature-settings: "tnum";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * Static canvas: a near-white neutral ground, like the site, lit by brand
+   * teal from the top left and a fainter teal from the bottom right, under a
+   * fine charcoal grain. Never animate it.
+   */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.14 0 0 0 0 0.14 0 0 0 0 0.14 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+      0 0 / 220px 220px,
+      radial-gradient(
+        1200px 700px at 0% 0%,
+        rgba(130, 196, 204, 0.34),
+        transparent 62%
+      ),
+      radial-gradient(
+        1100px 720px at 100% 100%,
+        rgba(130, 196, 204, 0.16),
+        transparent 62%
+      );
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  html:has(.b-layout),
+  body:has(.b-layout) {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  button:not(:disabled),
+  [role="button"],
+  [data-slot="dropdown-menu-item"],
+  [data-slot="select-item"] {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: rgba(130, 196, 204, 0.45);
+    color: var(--ink);
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--charcoal-a15);
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--charcoal-a15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: The accessibility preference must override smooth scrolling. */
+    scroll-behavior: auto !important;
+    /* biome-ignore lint/complexity/noImportantStyles: The accessibility preference must override animations. */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: The accessibility preference must override animation loops. */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: The accessibility preference must override transitions. */
+    transition-duration: 0.01ms !important;
   }
 }

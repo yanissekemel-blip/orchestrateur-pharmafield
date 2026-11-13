@@ -1,0 +1,167 @@
+/*
+ * Content motion: page transitions, interactive cards, the workspace rail,
+ * loading shimmer, and state illustrations. Data arriving after a route
+ * change appears in place: the page transition is the only entrance.
+ */
+@layer components {
+  /* The login backdrop's bands drift slowly, out of phase. */
+  .auth-emblem-backdrop::before {
+    animation: pharmafield-drift 9s var(--ease-in-out) infinite;
+  }
+  .auth-emblem-backdrop::after {
+    --drift: -18px;
+    animation: pharmafield-drift 11s var(--ease-in-out) infinite;
+  }
+
+  /*
+   * First paint only: #root mounts once, so this never replays. Route changes
+   * are animated by view transitions alone; animating <main> as well would
+   * replay the entrance after every transition, since pages remount it.
+   * Opacity only, so #root never becomes a containing block for fixed layers.
+   */
+  #root {
+    animation: pharmafield-fade-in var(--motion-page) var(--ease-out) backwards;
+  }
+
+  /* Interactive cards lift on hover; static cards stay put. */
+  :is(a, button, [data-interactive])[data-slot="panel"] {
+    transition:
+      border-color var(--motion-fast) var(--ease-out),
+      box-shadow var(--motion-base) var(--ease-out),
+      translate var(--motion-slow) var(--ease-spring-soft);
+  }
+  :is(a, button, [data-interactive])[data-slot="panel"]:hover {
+    translate: 0 -2px;
+  }
+
+  /* Rail icons lift on hover; the active pill slides via data-indicator. */
+  .workspace-nav-item svg {
+    transition: translate var(--motion-slow) var(--ease-spring);
+  }
+  .workspace-nav-item:hover svg {
+    translate: 0 -1px;
+  }
+
+  /* Loading: a soft light sweep over the skeleton fill. */
+  [data-slot="skeleton"] {
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.55) 50%,
+      transparent 80%
+    );
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    animation: pharmafield-shimmer 1.6s var(--ease-in-out) infinite;
+  }
+
+  /*
+   * Weekly schedule: while a drag overlaps other ranges, they fade into one
+   * preview block that springs in behind them, showing the merged range
+   * before the release commits it.
+   */
+  span[data-range-surface] {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-out);
+  }
+  [data-slot="weekly-range-merge"] {
+    animation: pharmafield-merge-in var(--motion-slow) var(--ease-spring-soft)
+      both;
+  }
+
+  @keyframes pharmafield-merge-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94, 0.98);
+    }
+  }
+
+  /* Inline editors open with a short rise. */
+  [data-slot="inline-editor"] {
+    animation: pharmafield-soft-rise var(--motion-slow) var(--ease-out) both;
+  }
+
+  @keyframes pharmafield-shimmer {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+}
+
+/*
+ * Page transitions. The router wraps navigations in a view transition. Only
+ * the contents of the shell panels are named, so the rail, the glass panels,
+ * and the canvas stay still while the page inside them changes.
+ */
+.workspace-main > header {
+  view-transition-name: workspace-header;
+}
+
+.workspace-main > .workspace-subheader {
+  view-transition-name: workspace-subheader;
+}
+
+.workspace-main > [data-slot="filter-bar"] {
+  view-transition-name: workspace-filters;
+}
+
+.workspace-main > .workspace-content,
+.workspace-panels {
+  view-transition-name: workspace-body;
+}
+
+.auth-story {
+  view-transition-name: auth-story;
+}
+
+.auth-form {
+  view-transition-name: auth-form;
+}
+
+::view-transition-group(root) {
+  animation-duration: var(--motion-fast);
+}
+
+::view-transition-group(*) {
+  animation-duration: var(--motion-page);
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-old(workspace-header),
+::view-transition-old(workspace-filters),
+::view-transition-old(workspace-body),
+::view-transition-old(auth-story),
+::view-transition-old(auth-form) {
+  animation: pharmafield-view-out var(--motion-fast) var(--ease-in) both;
+}
+
+::view-transition-new(workspace-header),
+::view-transition-new(workspace-filters),
+::view-transition-new(workspace-body),
+::view-transition-new(auth-story),
+::view-transition-new(auth-form) {
+  animation: pharmafield-view-in var(--motion-page) var(--ease-out) both;
+}
+
+/* The body follows the header slightly, so the page reads top to bottom. */
+::view-transition-new(workspace-body) {
+  animation-delay: 40ms;
+}
+
+@keyframes pharmafield-view-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pharmafield-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

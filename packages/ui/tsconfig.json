@@ -1,9 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": { "@orchestrateur-pharmafield/ui/*": ["./src/*"] }
-  },
-  "include": ["src"]
+  "compilerOptions": { "jsx": "react-jsx" },
+  "include": ["src", "test"]
 }

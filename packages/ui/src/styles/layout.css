@@ -1,0 +1,443 @@
+/* Application shell layouts: workspace icon rail and home. Auth screens live in auth.css. */
+@layer components {
+  .workspace-layout,
+  .home-layout {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    padding: var(--layout-pad);
+    /* Transparent so the page grain shows through behind the panels. */
+    background: transparent;
+  }
+
+  .workspace-layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    gap: var(--layout-gap);
+  }
+
+  .workspace-layout[data-sidebar="expanded"] {
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  }
+
+  .workspace-sidebar-column {
+    display: flex;
+    min-height: calc(100dvh - 2 * var(--layout-pad));
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  /*
+   * Sidebar: one glass column holding the logo, labelled destinations, and
+   * the account control. On phones it becomes a horizontal icon bar.
+   */
+
+  .workspace-sidebar {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--sidebar-panel-gap);
+  }
+
+  .workspace-sidebar-panel {
+    min-width: 0;
+  }
+
+  .workspace-sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .workspace-sidebar-toggle {
+    color: var(--ink-3);
+  }
+
+  /*
+   * Collapsed sidebar (desktop only, remembered per user in the browser): a
+   * 68px icon rail. The mark stacks over the toggle, labels stay as the
+   * links' accessible names, groups are separated by hairlines, and the
+   * profile shows its avatar only.
+   */
+  .workspace-layout {
+    transition: grid-template-columns var(--motion-base) var(--ease-out);
+  }
+  @media (width >= 40rem) {
+    .workspace-layout[data-sidebar="collapsed"] {
+      grid-template-columns: var(--sidebar-collapsed-w) minmax(0, 1fr);
+    }
+    [data-sidebar="collapsed"] .workspace-sidebar-brand {
+      flex-direction: column;
+      gap: 10px;
+    }
+    [data-sidebar="collapsed"] .workspace-sidebar-panel.panel-glass {
+      background: var(--surface-glass);
+    }
+    [data-sidebar="collapsed"] .workspace-nav-item {
+      justify-content: center;
+      padding: 0;
+    }
+    [data-sidebar="collapsed"] .workspace-nav-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    [data-sidebar="collapsed"] .workspace-nav-group-label,
+    [data-sidebar="collapsed"] .workspace-nav-soon,
+    [data-sidebar="collapsed"] .workspace-user-text,
+    [data-sidebar="collapsed"] .workspace-user-chevron {
+      display: none;
+    }
+    [data-sidebar="collapsed"] .workspace-nav-group + .workspace-nav-group {
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+    [data-sidebar="collapsed"]
+      .workspace-sidebar-controls
+      [data-slot="button"] {
+      justify-content: center;
+      padding: 0;
+    }
+  }
+
+  /* Shell frame: the sidebar panels and the main panel carry a charcoal hairline. */
+  .workspace-sidebar-panel.panel-glass,
+  .workspace-main.panel-glass {
+    border-color: var(--charcoal-a10);
+  }
+  .workspace-sidebar-panel.panel-glass,
+  .workspace-main.panel-glass {
+    background: var(--surface-glass);
+  }
+
+  .workspace-sidebar-body {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+  }
+
+  .workspace-sidebar-body nav {
+    --indicator-radius: var(--radius-control);
+    --indicator-bg: var(--nav-active-bg);
+    --indicator-shadow: var(--shadow-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .workspace-sidebar-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .workspace-footer-button {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .workspace-footer-icon,
+  .workspace-footer-avatar {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    place-items: center;
+    border-radius: var(--radius-sm);
+  }
+
+  .workspace-footer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    box-shadow: var(--shadow-input);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .workspace-field-label {
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Destination groups, each led by a small navigation-group label. */
+  .workspace-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .workspace-nav-group + .workspace-nav-group {
+    margin-top: 14px;
+  }
+  .workspace-nav-group-label {
+    padding: 0 12px 2px;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  /* Planned destinations: muted, inert, tagged "Bientôt". */
+  .workspace-nav-item[aria-disabled="true"] {
+    color: var(--ink-3);
+    cursor: default;
+    opacity: 0.7;
+  }
+  .workspace-nav-item[aria-disabled="true"]:hover {
+    background: transparent;
+    color: var(--ink-3);
+  }
+  .workspace-nav-soon {
+    margin-left: auto;
+    flex: none;
+    border-radius: var(--radius-control);
+    background: var(--charcoal-a06);
+    padding: 3px 6px;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .workspace-nav-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workspace-nav-item {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    flex: none;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    border-radius: var(--radius-control);
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    background: transparent;
+    color: var(--nav-ink-3);
+    transition:
+      background-color var(--motion-fast) var(--motion-ease),
+      box-shadow var(--motion-fast) var(--motion-ease),
+      color var(--motion-fast) var(--motion-ease);
+  }
+
+  .workspace-nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    stroke-width: 1.75;
+  }
+
+  .workspace-nav-item:hover {
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--nav-ink);
+  }
+
+  .workspace-nav-item[aria-current="page"],
+  .workspace-nav-item[data-active="true"],
+  .workspace-nav-item[data-state="open"] {
+    background: var(--nav-active-bg);
+    box-shadow: var(--shadow-accent);
+    color: #fff;
+  }
+
+  /* The current destination carries the teal signal tick on the rail edge. */
+  .workspace-nav-item[aria-current="page"]::after {
+    position: absolute;
+    top: 50%;
+    left: -12px;
+    width: 3px;
+    height: 20px;
+    background: var(--nav-accent);
+    content: "";
+    translate: 0 -50%;
+  }
+
+  .workspace-nav-item:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .workspace-nav-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 0 1.5px #fff;
+  }
+
+  /* A count rather than a dot: charcoal ink, since teal is reserved for the
+     primary action and the active selection. */
+  .workspace-nav-badge[data-count] {
+    top: 3px;
+    right: 1px;
+    display: grid;
+    width: auto;
+    min-width: 17px;
+    height: 17px;
+    place-items: center;
+    border-radius: var(--radius-control);
+    padding: 0 4px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .workspace-main,
+  .workspace-panels,
+  .home-surface {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /*
+   * The shell never scrolls: the rail and the main panel are pinned to the
+   * viewport, and only the content inside the main panel scrolls.
+   */
+  .workspace-main {
+    display: flex;
+    height: calc(100dvh - 2 * var(--layout-pad));
+    min-height: 0;
+    flex-direction: column;
+    border-radius: var(--radius-shell);
+  }
+
+  /*
+   * Pages made of several glass panels (the inbox) sit straight on the canvas
+   * beside the rail, pinned to the viewport like the main panel. The wrapper
+   * stays transparent; each panel scrolls on its own.
+   */
+  .workspace-panels {
+    display: flex;
+    height: calc(100dvh - 2 * var(--layout-pad));
+    min-height: 0;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  /* Its top-level panels share the rail's shell radius. */
+  .workspace-panels .panel-glass:not(.panel-glass .panel-glass) {
+    border-radius: var(--radius-shell);
+  }
+
+  .workspace-content {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 22px 24px;
+  }
+
+  /* Record section tabs between the page header and the filter bar. */
+  .workspace-subheader {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    min-width: 0;
+    padding: 0 22px 6px;
+  }
+
+  /* Record pages sit close under their header, like listings under the filter bar. */
+  .workspace-main[data-full-height="true"] .workspace-content {
+    padding-top: 4px;
+  }
+
+  /*
+   * Full-height pages fill the panel on desktop and their columns scroll
+   * independently; below 1024px they stack and the content scrolls as one.
+   */
+  @media (width >= 64rem) {
+    .workspace-main[data-full-height="true"] .workspace-content {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-bottom: 22px;
+    }
+  }
+
+  /* Full-page listings sit in one inset white card; rows scroll inside it. */
+  .workspace-main[data-table-layout="true"] .workspace-content {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 4px 22px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-panel);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card-glass);
+    padding: 0;
+  }
+  .workspace-section-heading {
+    margin-bottom: 20px;
+  }
+  .workspace-section-heading h2 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .workspace-section-heading > p:last-child {
+    margin-top: 5px;
+    color: var(--ink-2);
+  }
+
+  .home-surface {
+    min-height: calc(100dvh - 2 * var(--layout-pad));
+  }
+  .home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 28px 12px;
+  }
+  .home-content {
+    display: grid;
+    min-height: calc(100dvh - 110px);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+    padding: clamp(32px, 7vw, 110px);
+  }
+  @media (width < 48rem) {
+    .home-content {
+      grid-template-columns: 1fr;
+      align-content: center;
+    }
+  }
+
+  /* Phone layouts (below 40rem) live in phone.css. */
+}

@@ -1,4 +1,4 @@
-import { Toaster } from '@orchestrateur-pharmafield/ui/components/sonner';
+import { Toaster } from '@orchestrateur-pharmafield/ui/sonner';
 import type { QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 

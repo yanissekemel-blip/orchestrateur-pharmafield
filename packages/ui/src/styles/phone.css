@@ -1,0 +1,547 @@
+/*
+ * Phones (below 40rem) and touch screens. Pages never write their own phone
+ * layout: the workspace shell and the shared components adapt here, so one
+ * page serves every width. Breakpoints match Tailwind (`max-sm:` = phone).
+ *
+ * The first part is layered with the components so page utilities can still
+ * refine it. The second part is unlayered on purpose: it must override the
+ * positioning utilities of the shared overlays and tables on phones.
+ */
+@layer components {
+  .workspace-tabbar {
+    display: none;
+  }
+
+  @media (pointer: coarse) {
+    html {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Touch targets reach --touch-target without resizing the control. */
+    [data-slot="button"]:not([data-variant="link"])::after {
+      position: absolute;
+      inset: min(0px, calc((100% - var(--touch-target)) / 2));
+      content: "";
+    }
+    [data-slot="button"]:not([data-variant="link"]) {
+      position: relative;
+    }
+  }
+
+  /* The native app never bounces past the shell. */
+  html[data-platform="native"],
+  html[data-platform="native"] body {
+    overscroll-behavior: none;
+  }
+
+  @media (width < 40rem) {
+    /*
+     * Workspace: no panels on phones. The page runs edge to edge on the
+     * canvas like a native screen: its header is the top bar, its content
+     * scrolls, and the bottom tab bar replaces the hidden sidebar. (The
+     * panel frame itself is removed in the unlayered part below.)
+     */
+    .workspace-layout,
+    .workspace-layout[data-sidebar] {
+      display: flex;
+      height: 100dvh;
+      min-height: 0;
+      flex-direction: column;
+      gap: 0;
+      padding: var(--safe-top) var(--safe-right) 0 var(--safe-left);
+    }
+    .workspace-sidebar-column {
+      display: none;
+    }
+    .workspace-main,
+    .workspace-panels {
+      height: auto;
+      min-height: 0;
+      flex: 1;
+    }
+    .workspace-panels {
+      gap: var(--phone-pad);
+      padding: var(--phone-pad);
+    }
+    .workspace-content {
+      padding: 16px;
+    }
+    .workspace-main[data-table-layout="true"] .workspace-content {
+      margin: 0;
+    }
+
+    .workspace-tabbar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-shrink: 0;
+      align-items: stretch;
+      gap: 4px;
+      min-height: calc(var(--tabbar-h) + var(--safe-bottom));
+      margin: 0 calc(-1 * var(--safe-right)) 0 calc(-1 * var(--safe-left));
+      padding: 6px calc(var(--phone-pad) + var(--safe-right))
+        calc(6px + var(--safe-bottom)) calc(var(--phone-pad) + var(--safe-left));
+      border-top: 1px solid var(--border-glass);
+      background: var(--surface-glass-strong);
+      -webkit-backdrop-filter: var(--blur-glass);
+      backdrop-filter: var(--blur-glass);
+    }
+
+    .home-layout {
+      padding: calc(var(--phone-pad) + var(--safe-top))
+        calc(var(--phone-pad) + var(--safe-right))
+        calc(var(--phone-pad) + var(--safe-bottom))
+        calc(var(--phone-pad) + var(--safe-left));
+    }
+    .home-surface {
+      min-height: calc(
+        100dvh -
+        2 *
+        var(--phone-pad) -
+        var(--safe-top) -
+        var(--safe-bottom)
+      );
+    }
+    .home-header {
+      padding: 18px;
+    }
+    .home-header nav {
+      display: none;
+    }
+    .home-content {
+      min-height: auto;
+      padding: 48px 24px;
+    }
+  }
+
+  /* Tab bar items: an icon over a short label; the active one is solid charcoal. */
+  .workspace-tab {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: var(--radius-control);
+    color: var(--ink-3);
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1.1;
+    outline: none;
+  }
+  .workspace-tab:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+  .workspace-tab-icon {
+    display: grid;
+    width: 48px;
+    height: 28px;
+    place-items: center;
+    border-radius: var(--radius-control);
+    transition:
+      background-color var(--motion-fast) var(--ease-out),
+      color var(--motion-fast) var(--ease-out);
+  }
+  .workspace-tab-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+  .workspace-tab-label {
+    display: block;
+    max-width: 100%;
+    line-height: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .workspace-tab:is([aria-current="page"], [data-state="open"]) {
+    color: var(--ink);
+  }
+  .workspace-tab[aria-current="page"] .workspace-tab-icon {
+    background: var(--charcoal-900);
+    color: #fff;
+  }
+  .workspace-tab[data-state="open"] .workspace-tab-icon {
+    background: var(--charcoal-a10);
+  }
+
+  /* The phone menu sheet: the account, then every destination as a row. */
+  .workspace-menu-account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 16px 8px;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-card);
+    padding: 12px;
+    background: var(--surface-card);
+  }
+  .workspace-menu-sheet nav {
+    display: grid;
+    gap: 4px;
+    padding: 4px 16px 16px;
+  }
+  .workspace-menu-sheet .workspace-nav-item {
+    height: var(--touch-target);
+    font-size: 14px;
+  }
+  /* The rail's teal tick sits on a panel edge; the sheet has none. */
+  .workspace-menu-sheet .workspace-nav-item::after {
+    display: none;
+  }
+}
+
+@media (width < 40rem) {
+  /* The main panel loses its frame: no border, corners, glass, or grid. */
+  .workspace-main.panel-glass {
+    border-width: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    corner-shape: round;
+  }
+  /*
+   * Sign-in screens, like a native app: no outer panel; the emblem (mark
+   * over the wordmark, on the tactical grid) fills the top of the screen and
+   * the form is a white sheet anchored to the bottom, sized to its content.
+   */
+  .auth-layout {
+    padding: var(--safe-top) var(--safe-right) 0 var(--safe-left);
+  }
+  /* Fixed to the screen; with the keyboard open, it scrolls inside. */
+  .auth-surface.panel-glass {
+    display: flex;
+    height: calc(100dvh - var(--safe-top));
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    flex-direction: column;
+    border-width: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    corner-shape: round;
+  }
+  .auth-story {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 24px 20px;
+  }
+  .auth-emblem {
+    min-height: 96px;
+    flex: 1;
+    flex-direction: column;
+    gap: 22px;
+    margin: 0 -20px;
+  }
+  .auth-emblem-backdrop,
+  .auth-emblem-mark {
+    display: block;
+  }
+  .auth-emblem-mark {
+    order: -1;
+    width: 96px;
+  }
+  .auth-emblem-wordmark {
+    width: 168px;
+  }
+  .auth-form-side.panel-card {
+    display: block;
+    flex: none;
+    margin: 0;
+    padding-bottom: var(--safe-bottom);
+    border-width: 1px 0 0;
+    border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+    box-shadow: 0 -12px 32px rgba(36, 36, 36, 0.06);
+  }
+
+  .auth-form {
+    width: 100%;
+    gap: 22px;
+    padding: 28px 20px 24px;
+  }
+  .auth-form-header h1 {
+    font-size: 24px;
+  }
+  /* Short phones: a smaller emblem leaves the whole form on screen. */
+  @media (height < 760px) {
+    .auth-story {
+      padding: 12px 20px;
+    }
+    .auth-emblem {
+      gap: 12px;
+    }
+    .auth-emblem-mark {
+      width: 56px;
+    }
+    .auth-emblem-wordmark {
+      width: 120px;
+    }
+    .auth-form {
+      gap: 18px;
+      padding-top: 22px;
+    }
+  }
+
+  /* Page headers act as a compact top bar. */
+  [data-slot="page-header"] > :first-child {
+    min-height: 56px;
+    padding: 12px 16px 8px;
+  }
+  [data-slot="page-header"] h1 {
+    font-size: 20px;
+  }
+  [data-slot="page-header"] [data-slot="page-header-stats"] {
+    padding-inline: 16px;
+  }
+  [data-slot="filter-bar"] {
+    padding-inline: 16px;
+  }
+
+  /* iOS zooms into fields whose text is smaller than 16px. */
+  input:not([type="checkbox"], [type="radio"], [type="range"]),
+  textarea,
+  select,
+  [data-slot="select-trigger"] {
+    font-size: 16px;
+  }
+
+  /*
+   * Modals and sheets become bottom sheets: full width, anchored to the
+   * bottom edge above the gesture bar, rising from below.
+   */
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="sheet-content"] {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: calc(100dvh - var(--safe-top) - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: var(--safe-bottom);
+    border-width: 1px 0 0;
+    border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+    translate: none;
+    --pharmafield-sheet-x: 0;
+    --pharmafield-sheet-y: 48px;
+  }
+
+  :is(
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"]
+  )[data-state="open"] {
+    animation:
+      pharmafield-fade-in var(--motion-base) var(--ease-out) both,
+      pharmafield-sheet-in var(--motion-spring) var(--ease-spring-soft) both;
+  }
+  :is(
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"]
+  )[data-state="closed"] {
+    animation: pharmafield-sheet-out var(--motion-base) var(--ease-in) both;
+  }
+
+  /*
+   * Menus, popovers (date pickers, comboboxes), and popper selects become
+   * action sheets over a dimmed page. Radix positions the wrapper with inline
+   * styles, hence the !important declarations.
+   */
+  [data-radix-popper-content-wrapper]:has(
+    > :is(
+        [data-slot="dropdown-menu-content"],
+        [data-slot="popover-content"],
+        [data-slot="select-content"]
+      )
+  ) {
+    /* biome-ignore lint/complexity/noImportantStyles: overrides Radix inline positioning */
+    position: fixed !important;
+    /* biome-ignore lint/complexity/noImportantStyles: overrides Radix inline positioning */
+    inset: auto 0 0 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: overrides Radix inline positioning */
+    min-width: 0 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: overrides Radix inline positioning */
+    transform: none !important;
+    box-shadow: 0 0 0 100vmax var(--surface-overlay);
+  }
+  [data-radix-popper-content-wrapper]
+    > :is(
+      [data-slot="dropdown-menu-content"],
+      [data-slot="popover-content"],
+      [data-slot="select-content"]
+    ) {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    max-height: min(75dvh, calc(100dvh - var(--safe-top) - 48px));
+    overflow-y: auto;
+    padding: 8px 8px calc(8px + var(--safe-bottom));
+    border-width: 1px 0 0;
+    border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+    transform-origin: bottom center;
+    --motion-popover-x: 0;
+    --motion-popover-y: 24px;
+  }
+
+  /* Calendars and other fixed-width popover content centre in the sheet. */
+  [data-radix-popper-content-wrapper] > [data-slot="popover-content"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  [data-radix-popper-content-wrapper]
+    > [data-slot="popover-content"]
+    > [data-slot="calendar"] {
+    align-self: center;
+  }
+  :is(
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="select-item"],
+    [data-slot="command-item"]
+  ) {
+    min-height: var(--touch-target);
+    font-size: 14px;
+  }
+
+  /*
+   * Tables become a list of cards: each row is a card, each cell a line with
+   * its column label (`TableCell label`). `phone="title"` leads the card and
+   * `phone="hidden"` drops a cell. `<Table phoneLayout="scroll">` opts out.
+   */
+  [data-slot="table-container"]:has(> [data-phone-layout="cards"]) {
+    overflow-x: hidden;
+  }
+  [data-slot="table"][data-phone-layout="cards"] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  [data-phone-layout="cards"] > [data-slot="table-header"] {
+    display: none;
+  }
+  [data-phone-layout="cards"] > :is([data-slot="table-body"], tbody) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-card);
+    background: var(--surface-card);
+  }
+  [data-phone-layout="cards"] [data-slot="table-row"][data-state="selected"] {
+    border-color: var(--charcoal-a10);
+    background: var(--charcoal-a06);
+  }
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer])
+    > :is(td, th) {
+    display: flex;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer])
+    > [data-label]::before {
+    flex-shrink: 0;
+    color: var(--ink-3);
+    content: attr(data-label);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  [data-phone-layout="cards"] [data-phone-role="title"] {
+    order: -1;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer])
+    > [data-phone-role="hidden"] {
+    display: none;
+  }
+  /* The row's overflow menu sits in the card's top-right corner, beside the title. */
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer]):has(
+      > [data-phone-role="actions"]
+    ) {
+    position: relative;
+    padding-right: 48px;
+  }
+  [data-phone-layout="cards"]
+    [data-slot="table-row"]:not([data-state-row], [data-spacer])
+    > [data-phone-role="actions"] {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    width: auto;
+    overflow: visible;
+  }
+  [data-phone-layout="cards"] :is([data-state-row], [data-spacer]),
+  [data-phone-layout="cards"] :is([data-state-row], [data-spacer]) > td {
+    display: block;
+  }
+
+  /*
+   * Phones scroll through lists instead of paging: the listing loads the
+   * next 50 rows as the end comes into view, so there is no pagination bar
+   * or page-size choice.
+   */
+  [data-slot="table-pagination"] {
+    display: none;
+  }
+}
+
+/*
+ * The phone tab bar's record button: a charcoal chamfered block rising out of
+ * the middle of the bar. A ring in the canvas colour around it reads as a
+ * notch cut into the bar's top edge. Unlayered so it overrides the Button's
+ * size utilities.
+ */
+.workspace-tab-record {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+}
+.workspace-tab-record [data-slot="button"] {
+  position: absolute;
+  top: -30px;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 6px var(--bg),
+    0 10px 22px rgba(36, 36, 36, 0.28);
+}
+.workspace-tab-record [data-slot="button"] svg {
+  width: 24px;
+  height: 24px;
+}
